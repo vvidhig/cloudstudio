@@ -4,6 +4,7 @@ import Marquee from "react-fast-marquee";
 import AgentTerminal from "../cards/AgentTerminal";
 import RAGDiagram from "../cards/RAGDiagram";
 import ClaudeCode from "../cards/ClaudeCode";
+import { useIsMobile } from "../../hooks/useIsMobile";
 
 const cycleWords = ["APIs", "Scripts", "demos", "LLMs"];
 
@@ -33,6 +34,7 @@ const serviceCards = [
 
 export default function WhatWeDoSection() {
   const [wordIdx, setWordIdx] = useState(0);
+  const isMobile = useIsMobile();
 
   useEffect(() => {
     const iv = setInterval(() => setWordIdx((i) => (i + 1) % cycleWords.length), 2500);
@@ -69,15 +71,16 @@ export default function WhatWeDoSection() {
       <div
         style={{
           display: "flex",
-          padding: "80px 80px",
-          gap: 60,
+          flexDirection: isMobile ? "column" : "row",
+          padding: isMobile ? "48px 20px" : "80px 80px",
+          gap: isMobile ? 32 : 60,
           alignItems: "flex-start",
-          maxWidth: 1160 + 160,
+          maxWidth: isMobile ? "100%" : 1160 + 160,
           margin: "0 auto",
         }}
       >
         {/* Left */}
-        <div style={{ flex: "0 0 50%" }}>
+        <div style={{ flex: isMobile ? "unset" : "0 0 50%", width: isMobile ? "100%" : undefined }}>
           <div
             style={{
               display: "flex",
@@ -165,10 +168,10 @@ export default function WhatWeDoSection() {
       <div
         style={{
           display: "grid",
-          gridTemplateColumns: "repeat(3, 1fr)",
+          gridTemplateColumns: isMobile ? "1fr" : "repeat(3, 1fr)",
           gap: 20,
-          padding: "0 80px 80px",
-          maxWidth: 1160 + 160,
+          padding: isMobile ? "0 20px 48px" : "0 80px 80px",
+          maxWidth: isMobile ? "100%" : 1160 + 160,
           margin: "0 auto",
         }}
       >

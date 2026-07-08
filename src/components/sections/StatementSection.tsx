@@ -1,7 +1,9 @@
 import { useEffect, useRef, useState } from "react";
 import CursorFollowingEyes from "../CursorFollowingEyes";
+import { useIsMobile } from "../../hooks/useIsMobile";
 
 export default function StatementSection() {
+  const isMobile = useIsMobile();
   const sectionRef = useRef<HTMLDivElement>(null);
   const [line1Filled, setLine1Filled] = useState(false);
   const [line2Filled, setLine2Filled] = useState(false);
@@ -43,7 +45,7 @@ export default function StatementSection() {
           width: "100%",
           display: "flex",
           alignItems: "center",
-          padding: "80px 80px",
+          padding: isMobile ? "60px 20px" : "80px 80px",
           overflow: "hidden",
           position: "relative",
         }}
@@ -131,10 +133,12 @@ export default function StatementSection() {
           </div>
         </div>
 
-        {/* Eyes — right side, ring variant */}
-        <div style={{ opacity: 0.9 }}>
-          <CursorFollowingEyes size="lg" variant="ring" />
-        </div>
+        {/* Eyes — right side, ring variant, hidden on mobile */}
+        {!isMobile && (
+          <div style={{ opacity: 0.9 }}>
+            <CursorFollowingEyes size="lg" variant="ring" />
+          </div>
+        )}
         </div>{/* end maxWidth */}
       </div>
     </section>

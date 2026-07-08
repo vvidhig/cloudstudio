@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useIsMobile } from "../../hooks/useIsMobile";
 
 const faqs = [
   {
@@ -31,13 +32,14 @@ const faqs = [
 export default function FAQSection() {
   const [open, setOpen] = useState<number | null>(null);
   const [hovered, setHovered] = useState<number | null>(null);
+  const isMobile = useIsMobile();
 
   const toggle = (i: number) => setOpen(open === i ? null : i);
 
   return (
     <section
       id="faq"
-      style={{ background: "#e8e8f0", padding: "80px 80px 100px" }}
+      style={{ background: "#e8e8f0", padding: isMobile ? "48px 20px 60px" : "80px 80px 100px" }}
     >
       {/* Centered content column */}
       <div style={{ maxWidth: 860, margin: "0 auto" }}>

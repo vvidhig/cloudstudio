@@ -1,3 +1,5 @@
+import { useIsMobile } from "../../hooks/useIsMobile";
+
 const steps = [
   {
     num: "01",
@@ -20,17 +22,18 @@ const steps = [
 ];
 
 export default function HowWeWorkSection() {
+  const isMobile = useIsMobile();
   return (
     <section
       id="how-we-work"
-      style={{ background: "#e8e8f0", padding: "80px 80px 60px" }}
+      style={{ background: "#e8e8f0", padding: isMobile ? "48px 20px 40px" : "80px 80px 60px" }}
     >
       <div style={{ maxWidth: 1160, margin: "0 auto" }}>
       {/* Top row: label + headline (left) | description (right) */}
-      <div style={{ display: "flex", alignItems: "flex-end", gap: 60, marginBottom: 48 }}>
+      <div style={{ display: "flex", flexDirection: isMobile ? "column" : "row", alignItems: isMobile ? "flex-start" : "flex-end", gap: isMobile ? 20 : 60, marginBottom: 48 }}>
 
         {/* Left */}
-        <div style={{ flex: "0 0 50%" }}>
+        <div style={{ flex: isMobile ? "unset" : "0 0 50%" }}>
           <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 20 }}>
             <div style={{ width: 6, height: 6, borderRadius: "50%", background: "#0a0a0a", flexShrink: 0 }} />
             <span style={{
@@ -73,7 +76,7 @@ export default function HowWeWorkSection() {
       {/* Three cards */}
       <div style={{
         display: "grid",
-        gridTemplateColumns: "repeat(3, 1fr)",
+        gridTemplateColumns: isMobile ? "1fr" : "repeat(3, 1fr)",
         gap: 16,
         marginBottom: 48,
       }}>

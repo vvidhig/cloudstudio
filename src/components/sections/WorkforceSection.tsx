@@ -163,13 +163,7 @@ function StaffCards() {
   };
 
   return (
-    <div style={{ position: "relative", width: 360, height: 430 }}>
-      {/*
-        Back cards: plain divs with CSS transform — no Framer Motion, no transitions.
-        They stay completely frozen while the top card animates out.
-        Content swaps instantly when topIdx changes (imperceptible because top card
-        is already at opacity 0 by then).
-      */}
+    <div style={{ position: "relative", width: "min(300px, 80vw)", height: 430, margin: "0 auto", transform: "translateX(13px)" }}>
       {BACK_SLOTS.map((slot, i) => (
         <div
           key={i}
@@ -183,12 +177,6 @@ function StaffCards() {
           <CardFace card={agentCards[(topIdx + 1 + i) % agentCards.length]} />
         </div>
       ))}
-
-      {/*
-        Top card: single motion.div that never unmounts.
-        Exit = animates up-right-fade (250ms easeIn).
-        Re-entry = jumps instantly to origin (duration 0) while opacity is still 0.
-      */}
       <motion.div
         style={{ position: "absolute", inset: 0, zIndex: 4, cursor: "pointer" }}
         animate={isExiting
@@ -206,6 +194,13 @@ function StaffCards() {
 }
 
 export default function WorkforceSection() {
+  const [isMobile, setIsMobile] = useState(() => window.innerWidth < 768);
+  useEffect(() => {
+    const check = () => setIsMobile(window.innerWidth < 768);
+    window.addEventListener("resize", check);
+    return () => window.removeEventListener("resize", check);
+  }, []);
+
   const particles = Array.from({ length: 35 }, (_, i) => ({
     id: i,
     x: Math.random() * 100,
@@ -215,28 +210,26 @@ export default function WorkforceSection() {
   return (
     <section id="workforce">
       {/* Stats counter */}
-      <div style={{ background: "#0a0a0a", padding: "80px 80px", position: "relative", overflow: "hidden" }}>
+      <div style={{ background: "#0a0a0a", padding: isMobile ? "48px 20px" : "80px 80px", position: "relative", overflow: "hidden" }}>
         {particles.map((p) => <Particle key={p.id} x={p.x} y={p.y} />)}
-        <div style={{ display: "flex", justifyContent: "space-around", alignItems: "center", position: "relative", zIndex: 1, maxWidth: 1160, margin: "0 auto" }}>
+        <div style={{ display: "flex", flexWrap: "wrap", justifyContent: isMobile ? "center" : "space-around", gap: isMobile ? 32 : 0, alignItems: "center", position: "relative", zIndex: 1, maxWidth: 1160, margin: "0 auto" }}>
           {stats.map((s) => <StatCounter key={s.label} stat={s} />)}
-          <div style={{ opacity: 0.8 }}>
-            <CursorFollowingEyes size="sm" />
-          </div>
+          {!isMobile && <div style={{ opacity: 0.8 }}><CursorFollowingEyes size="sm" /></div>}
         </div>
       </div>
 
       {/* Digital Workforce */}
-      <div style={{ background: "#8893d4", padding: "80px 80px", minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center" }}>
-        <div style={{ display: "flex", alignItems: "center", gap: 60, width: "100%", maxWidth: 1160 }}>
+      <div style={{ background: "#8893d4", padding: isMobile ? "48px 20px" : "80px 80px", minHeight: isMobile ? "auto" : "100vh", display: "flex", alignItems: "center", justifyContent: "center" }}>
+        <div style={{ display: "flex", flexDirection: isMobile ? "column" : "row", alignItems: isMobile ? "center" : "center", gap: isMobile ? 40 : 60, width: "100%", maxWidth: 1160 }}>
         {/* Left */}
-        <div style={{ flex: "0 0 48%" }}>
+        <div style={{ flex: isMobile ? "unset" : "0 0 48%", width: "100%" }}>
           <div style={{ fontSize: 11, letterSpacing: "0.15em", color: "rgba(0,0,0,0.5)", fontFamily: "Inter", marginBottom: 16 }}>
             ( THE DIGITAL WORKFORCE )
           </div>
           <div
             style={{
               fontFamily: '"DynaPuff", sans-serif',
-              fontSize: "clamp(44px, 5.8vw, 76px)",
+              fontSize: isMobile ? "clamp(36px, 9vw, 56px)" : "clamp(44px, 5.8vw, 76px)",
               color: "#0a0a0a",
               lineHeight: 0.97,
               marginBottom: 28,
@@ -252,7 +245,7 @@ export default function WorkforceSection() {
         </div>
 
         {/* Right — Staff cards */}
-        <div style={{ flex: "1 1 0", display: "flex", flexDirection: "column", alignItems: "center", gap: 28 }}>
+        <div style={{ flex: "1 1 0", display: "flex", flexDirection: "column", alignItems: "center", gap: 28, width: "100%" }}>
           <StaffCards />
           <button
             style={{

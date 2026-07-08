@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import CursorFollowingEyes from "../CursorFollowingEyes";
+import { useIsMobile } from "../../hooks/useIsMobile";
 
 export default function ContactSection() {
   const sectionRef = useRef<HTMLDivElement>(null);
@@ -25,6 +26,7 @@ export default function ContactSection() {
     return () => observer.disconnect();
   }, []);
 
+  const isMobile = useIsMobile();
   const headlineStyle: React.CSSProperties = {
     fontFamily: '"DynaPuff", sans-serif',
     fontSize: "clamp(72px, 10vw, 130px)",
@@ -38,10 +40,10 @@ export default function ContactSection() {
     <section
       id="contact"
       ref={sectionRef}
-      style={{ background: "#8893d4", padding: "120px 80px 80px" }}
+      style={{ background: "#8893d4", padding: isMobile ? "80px 20px 48px" : "120px 80px 80px" }}
     >
       <div style={{ maxWidth: 1160, margin: "0 auto" }}>
-      <div style={{ display: "flex", alignItems: "flex-start", gap: 60 }}>
+      <div style={{ display: "flex", flexDirection: isMobile ? "column" : "row", alignItems: "flex-start", gap: 60 }}>
         {/* Left */}
         <div style={{ flex: 1 }}>
           {/* Line 1 */}
@@ -98,8 +100,8 @@ export default function ContactSection() {
           <div
             style={{
               display: "grid",
-              gridTemplateColumns: "repeat(3, 1fr)",
-              gap: 40,
+              gridTemplateColumns: isMobile ? "1fr" : "repeat(3, 1fr)",
+              gap: isMobile ? 24 : 40,
               marginTop: 72,
               paddingTop: 40,
               borderTop: "1px solid rgba(0,0,0,0.2)",
@@ -141,10 +143,12 @@ export default function ContactSection() {
           </div>
         </div>
 
-        {/* Right — Eyes */}
-        <div style={{ paddingTop: 20 }}>
-          <CursorFollowingEyes size="md" />
-        </div>
+        {/* Right — Eyes, hidden on mobile */}
+        {!isMobile && (
+          <div style={{ paddingTop: 20 }}>
+            <CursorFollowingEyes size="md" />
+          </div>
+        )}
       </div>
       </div>{/* end maxWidth */}
     </section>

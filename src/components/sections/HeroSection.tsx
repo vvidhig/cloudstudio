@@ -1,9 +1,11 @@
 import { motion } from "framer-motion";
 import CursorFollowingEyes from "../CursorFollowingEyes";
+import { useIsMobile } from "../../hooks/useIsMobile";
 
 const lines: string[][] = [["AI", "that"], ["actually"], ["ships."]];
 
 export default function HeroSection() {
+  const isMobile = useIsMobile();
   return (
     <section
       id="hero"
@@ -12,16 +14,16 @@ export default function HeroSection() {
         background: "#8893d4",
         display: "flex",
         alignItems: "center",
-        padding: "0 80px",
-        paddingTop: 80,
+        padding: isMobile ? "80px 20px 40px" : "0 80px",
+        paddingTop: isMobile ? 80 : 80,
         position: "relative",
       }}
     >
       {/* Max-width content wrapper */}
-      <div style={{ display: "flex", alignItems: "center", width: "100%", maxWidth: 1160, margin: "0 auto" }}>
+      <div style={{ display: "flex", alignItems: "center", flexDirection: isMobile ? "column" : "row", width: "100%", maxWidth: 1160, margin: "0 auto", gap: isMobile ? 40 : 0 }}>
 
       {/* Left side */}
-      <div style={{ flex: "0 0 60%", paddingRight: 40 }}>
+      <div style={{ flex: isMobile ? "unset" : "0 0 60%", paddingRight: isMobile ? 0 : 40, width: isMobile ? "100%" : undefined }}>
         {/* Ticker */}
         <motion.div
           initial={{ opacity: 0, y: 16 }}
@@ -121,34 +123,37 @@ export default function HeroSection() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.6, duration: 0.5 }}
-          style={{ display: "flex", alignItems: "flex-start", gap: 40, marginTop: 32 }}
+          style={{ display: "flex", flexDirection: isMobile ? "column" : "row", alignItems: isMobile ? "flex-start" : "flex-start", gap: isMobile ? 16 : 40, marginTop: 32 }}
         >
-          <button
-            style={{
-              background: "#0a0a0a",
-              color: "#fff",
-              border: "none",
-              borderRadius: 999,
-              padding: "14px 28px",
-              fontSize: 15,
-              fontFamily: "Inter, sans-serif",
-              fontWeight: 500,
-              cursor: "none",
-              whiteSpace: "nowrap",
-              transition: "transform 0.2s",
-            }}
-            onMouseEnter={(e) => ((e.currentTarget as HTMLButtonElement).style.transform = "scale(1.04)")}
-            onMouseLeave={(e) => ((e.currentTarget as HTMLButtonElement).style.transform = "scale(1)")}
-          >
-            Book a call →
-          </button>
+          {!isMobile && (
+            <button
+              style={{
+                background: "#0a0a0a",
+                color: "#fff",
+                border: "none",
+                borderRadius: 999,
+                padding: "14px 28px",
+                fontSize: 15,
+                fontFamily: "Inter, sans-serif",
+                fontWeight: 500,
+                cursor: "none",
+                whiteSpace: "nowrap",
+                transition: "transform 0.2s",
+              }}
+              onMouseEnter={(e) => ((e.currentTarget as HTMLButtonElement).style.transform = "scale(1.04)")}
+              onMouseLeave={(e) => ((e.currentTarget as HTMLButtonElement).style.transform = "scale(1)")}
+            >
+              Book a call →
+            </button>
+          )}
           <p
             style={{
-              fontSize: 14,
+              fontSize: isMobile ? 16 : 14,
               color: "#0a0a0a",
-              maxWidth: 300,
+              maxWidth: isMobile ? "100%" : 300,
               lineHeight: 1.6,
               fontFamily: "Inter, sans-serif",
+              margin: 0,
             }}
           >
             AI agents, RAG pipelines and Claude systems for your real workflows —
@@ -163,14 +168,14 @@ export default function HeroSection() {
         animate={{ scale: 1, opacity: 1 }}
         transition={{ delay: 0.3, duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
         style={{
-          flex: "0 0 40%",
+          flex: isMobile ? "unset" : "0 0 40%",
           display: "flex",
-          justifyContent: "flex-start",
+          justifyContent: isMobile ? "center" : "flex-start",
           alignItems: "center",
-          paddingLeft: 24,
+          paddingLeft: isMobile ? 0 : 24,
         }}
       >
-        <CursorFollowingEyes size="lg" />
+        <CursorFollowingEyes size={isMobile ? "sm" : "lg"} />
       </motion.div>
 
       </div>{/* end max-width wrapper */}

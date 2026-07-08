@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useIsMobile } from "../../hooks/useIsMobile";
 
 const projects = [
   { num: "01", title: "Agents",  tags: "Orchestrator · Multi-agent", url: "agents.cloudstudio.es" },
@@ -139,6 +140,7 @@ function ProjectPreview({ project, idx }: { project: typeof projects[0]; idx: nu
 export default function SelectedWorkSection() {
   const [hovered, setHovered] = useState<number | null>(null);
   const displayIdx = hovered ?? 0;
+  const isMobile = useIsMobile();
 
   return (
     <section
@@ -146,7 +148,7 @@ export default function SelectedWorkSection() {
       style={{
         background: "#8893d4",
         minHeight: "100vh",
-        padding: "80px 80px",
+        padding: isMobile ? "48px 20px" : "80px 80px",
         display: "flex",
         flexDirection: "column",
         justifyContent: "center",
@@ -186,7 +188,7 @@ export default function SelectedWorkSection() {
       <div style={{ display: "flex", gap: 60, alignItems: "flex-start" }}>
 
         {/* Project list */}
-        <div style={{ flex: "0 0 52%" }}>
+        <div style={{ flex: isMobile ? "1" : "0 0 52%" }}>
           {projects.map((p, i) => (
             <div
               key={p.num}
@@ -266,22 +268,23 @@ export default function SelectedWorkSection() {
           <div style={{ height: 1, background: "rgba(0,0,0,0.2)" }} />
         </div>
 
-        {/* Preview — always visible, defaults to Agents */}
-        <div style={{
-          flex: 1,
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-        }}>
+        {/* Preview — right on desktop, hidden here on mobile (shown below) */}
+        {!isMobile && (
+          <div style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center" }}>
+            <AnimatePresence mode="wait">
+              <ProjectPreview key={displayIdx} project={projects[displayIdx]} idx={displayIdx} />
+            </AnimatePresence>
+          </div>
+        )}
+      </div>
+      {/* Mobile preview — below the list, always shows Agents placeholder */}
+      {isMobile && (
+        <div style={{ maxWidth: 1160, margin: "32px auto 0", width: "100%" }}>
           <AnimatePresence mode="wait">
-            <ProjectPreview
-              key={displayIdx}
-              project={projects[displayIdx]}
-              idx={displayIdx}
-            />
+            <ProjectPreview key={hovered ?? 0} project={projects[hovered ?? 0]} idx={hovered ?? 0} />
           </AnimatePresence>
         </div>
-      </div>
+      )}
       </div>{/* end maxWidth */}
     </section>
   );

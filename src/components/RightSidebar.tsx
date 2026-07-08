@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useIsMobile } from "../hooks/useIsMobile";
 
 const SECTIONS = [
   { id: "hero", label: "HERO", dark: false },
@@ -15,6 +16,7 @@ const SECTIONS = [
 export default function RightSidebar() {
   const [active, setActive] = useState("hero");
   const [subSectionDark, setSubSectionDark] = useState(true);
+  const isMobile = useIsMobile();
 
   useEffect(() => {
     const observers: IntersectionObserver[] = [];
@@ -39,6 +41,8 @@ export default function RightSidebar() {
     window.addEventListener("whatwebuild:cardchange", handler);
     return () => window.removeEventListener("whatwebuild:cardchange", handler);
   }, []);
+
+  if (isMobile) return null;
 
   const isWhatWeBuild = active === "what-we-build";
 

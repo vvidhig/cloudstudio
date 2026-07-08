@@ -201,6 +201,13 @@ function NavDots({ active, count, dark }: { active: number; count: number; dark:
 export default function WhatWeBuildSection() {
   const sectionRef = useRef<HTMLDivElement>(null);
   const [activeCard, setActiveCard] = useState(0);
+  const [isMobile, setIsMobile] = useState(() => window.innerWidth < 768);
+
+  useEffect(() => {
+    const check = () => setIsMobile(window.innerWidth < 768);
+    window.addEventListener("resize", check);
+    return () => window.removeEventListener("resize", check);
+  }, []);
 
   useEffect(() => {
     const section = sectionRef.current;
@@ -225,6 +232,31 @@ export default function WhatWeBuildSection() {
     );
   }, [activeCard]);
 
+  const cardContent = (card: typeof cards[0], i: number) => (
+    <>
+      <NavDots active={i} count={cards.length} dark={card.dark} />
+      <div style={{ fontSize: 11, letterSpacing: "0.12em", color: card.dark ? "rgba(255,255,255,0.45)" : "rgba(0,0,0,0.45)", fontFamily: "Inter, sans-serif", marginBottom: 14 }}>
+        {card.tag}
+      </div>
+      <div style={{ fontFamily: '"DynaPuff", sans-serif', fontSize: isMobile ? "clamp(36px, 9vw, 56px)" : "clamp(44px, 5.5vw, 78px)", color: card.textColor, lineHeight: 1.0, marginBottom: 20, whiteSpace: "pre-line" }}>
+        {card.title}
+      </div>
+      <p style={{ fontSize: 14, color: card.dark ? "rgba(255,255,255,0.65)" : "rgba(0,0,0,0.65)", lineHeight: 1.65, fontFamily: "Inter, sans-serif", marginBottom: 20, maxWidth: 420 }}>
+        {card.desc}
+      </p>
+      <div style={{ display: "flex", flexDirection: "column", gap: 6, marginBottom: 28 }}>
+        {card.bullets.map((b) => (
+          <div key={b} style={{ fontSize: 12, fontFamily: "monospace", color: card.dark ? "#8893d4" : "rgba(0,0,0,0.6)", letterSpacing: "0.04em" }}>
+            → {b}
+          </div>
+        ))}
+      </div>
+      <div style={{ display: "inline-block", border: `1.5px solid ${card.dark ? "rgba(255,255,255,0.35)" : "rgba(0,0,0,0.35)"}`, borderRadius: 999, padding: "8px 20px", fontSize: 11, letterSpacing: "0.1em", fontFamily: "Inter, sans-serif", color: card.dark ? "rgba(255,255,255,0.6)" : "rgba(0,0,0,0.6)" }}>
+        {card.timeline}
+      </div>
+    </>
+  );
+
   return (
     <section
       id="what-we-build"
@@ -241,88 +273,29 @@ export default function WhatWeBuildSection() {
                 animate={{ y: 0, scale: 1 }}
                 exit={{ scale: 0.91, opacity: 0.5 }}
                 transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-                style={{
-                  position: "absolute",
-                  inset: 0,
-                  background: card.bg,
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  overflow: "hidden",
-                }}
+                style={{ position: "absolute", inset: 0, background: card.bg, display: "flex", alignItems: "center", justifyContent: "center", overflow: "hidden" }}
               >
-                <div style={{ display: "flex", alignItems: "center", gap: 48, width: "100%", maxWidth: 1160, padding: "0 80px" }}>
-                {/* Left content */}
-                <div style={{ flex: "0 0 42%", minWidth: 0 }}>
-                  <NavDots active={i} count={cards.length} dark={card.dark} />
-                  <div style={{
-                    fontSize: 11,
-                    letterSpacing: "0.12em",
-                    color: card.dark ? "rgba(255,255,255,0.45)" : "rgba(0,0,0,0.45)",
-                    fontFamily: "Inter, sans-serif",
-                    marginBottom: 14,
-                  }}>
-                    {card.tag}
+                {isMobile ? (
+                  /* Mobile: single column, text top, diagram bottom */
+                  <div style={{ width: "100%", padding: "20px 20px 0", overflowY: "auto", height: "100vh", display: "flex", flexDirection: "column", justifyContent: "center" }}>
+                    <div style={{ flex: "0 0 auto" }}>
+                      {cardContent(card, i)}
+                    </div>
+                    <div style={{ flex: "0 0 auto", marginTop: 20, background: "#0e0e0e", borderRadius: 16, overflow: "hidden", height: 180, position: "relative" }}>
+                      <card.Diagram />
+                    </div>
                   </div>
-                  <div style={{
-                    fontFamily: '"DynaPuff", sans-serif',
-                    fontSize: "clamp(44px, 5.5vw, 78px)",
-                    color: card.textColor,
-                    lineHeight: 1.0,
-                    marginBottom: 20,
-                    whiteSpace: "pre-line",
-                  }}>
-                    {card.title}
+                ) : (
+                  /* Desktop: two columns */
+                  <div style={{ display: "flex", alignItems: "center", gap: 48, width: "100%", maxWidth: 1160, padding: "0 80px" }}>
+                    <div style={{ flex: "0 0 42%", minWidth: 0 }}>
+                      {cardContent(card, i)}
+                    </div>
+                    <div style={{ flex: "1 1 0", minWidth: 0, background: "#0e0e0e", borderRadius: 20, overflow: "hidden", height: "min(340px, 52vh)", position: "relative" }}>
+                      <card.Diagram />
+                    </div>
                   </div>
-                  <p style={{
-                    fontSize: 15,
-                    color: card.dark ? "rgba(255,255,255,0.65)" : "rgba(0,0,0,0.65)",
-                    lineHeight: 1.65,
-                    fontFamily: "Inter, sans-serif",
-                    marginBottom: 20,
-                    maxWidth: 420,
-                  }}>
-                    {card.desc}
-                  </p>
-                  <div style={{ display: "flex", flexDirection: "column", gap: 6, marginBottom: 28 }}>
-                    {card.bullets.map((b) => (
-                      <div key={b} style={{
-                        fontSize: 12,
-                        fontFamily: "monospace",
-                        color: card.dark ? "#8893d4" : "rgba(0,0,0,0.6)",
-                        letterSpacing: "0.04em",
-                      }}>
-                        → {b}
-                      </div>
-                    ))}
-                  </div>
-                  <div style={{
-                    display: "inline-block",
-                    border: `1.5px solid ${card.dark ? "rgba(255,255,255,0.35)" : "rgba(0,0,0,0.35)"}`,
-                    borderRadius: 999,
-                    padding: "8px 20px",
-                    fontSize: 11,
-                    letterSpacing: "0.1em",
-                    fontFamily: "Inter, sans-serif",
-                    color: card.dark ? "rgba(255,255,255,0.6)" : "rgba(0,0,0,0.6)",
-                  }}>
-                    {card.timeline}
-                  </div>
-                </div>
-
-                {/* Right — diagram, always dark */}
-                <div style={{
-                  flex: "1 1 0",
-                  minWidth: 0,
-                  background: "#0e0e0e",
-                  borderRadius: 20,
-                  overflow: "hidden",
-                  height: "min(340px, 52vh)",
-                  position: "relative",
-                }}>
-                  <card.Diagram />
-                </div>
-                </div>{/* end maxWidth wrapper */}
+                )}
               </motion.div>
             ) : null
           )}
